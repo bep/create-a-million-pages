@@ -92,8 +92,6 @@ func (r *runner) Run() error {
 	}
 	numPages -= numSections
 
-	rnd := rand.New(rand.NewSource(int64(numPages)))
-
 	fmt.Printf("Creating %d sections with %d pages\n", numSections, numPages)
 
 	frontMatterTemplate := `---
