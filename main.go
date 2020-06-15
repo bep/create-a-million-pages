@@ -45,7 +45,7 @@ var rnd = rand.New(rand.NewSource(int64(32)))
 type runner struct {
 	NumPages         int    `help:"number of pages to create (defaults to a cool million)"`
 	MinContentSizeKb int    `help:"minimum content size in kB (default 2)"`
-	MaxContentSizeKb int    `help:"minimum content size in kB (default 20)"`
+	MaxContentSizeKb int    `help:"maximum content size in kB (default 20)"`
 	OutDir           string `help:"directory to write files to."`
 }
 
