@@ -44,6 +44,7 @@ var rnd = rand.New(rand.NewSource(int64(32)))
 
 type runner struct {
 	NumPages         int    `help:"number of pages to create (defaults to a cool million)"`
+	CreateBundles    bool   `help:"create pages as bundles"`
 	MinContentSizeKb int    `help:"minimum content size in kB (default 2)"`
 	MaxContentSizeKb int    `help:"maximum content size in kB (default 20)"`
 	OutDir           string `help:"directory to write files to."`
@@ -132,7 +133,13 @@ title: Title %d
 		bundleDir := filepath.Join(sectionDir, fmt.Sprintf("bundle%d", i))
 		must(os.MkdirAll(bundleDir, 0777))
 
-		filename := filepath.Join(bundleDir, "index.md")
+		var filename string
+		if r.CreateBundles {
+			filename = filepath.Join(bundleDir, "index.md")
+		} else {
+			filename = filepath.Join(sectionDir, fmt.Sprintf("page%d.md", i))
+		}
+
 		frontmatter := fmt.Sprintf(frontMatterTemplate, i)
 
 		must(ioutil.WriteFile(filename, []byte(frontmatter+r.getMarkdown()), 0666))
