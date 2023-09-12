@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"os"
@@ -40,8 +39,6 @@ stetit](http://educta.com/vidissepraemia). Quae regia, hoc ultra admissa vix,
 gaudias. 
 `
 
-var rnd = rand.New(rand.NewSource(int64(32)))
-
 type runner struct {
 	NumPages         int    `help:"number of pages to create (defaults to a cool million)"`
 	CreateBundles    bool   `help:"create pages as bundles"`
@@ -78,7 +75,7 @@ func main() {
 }
 
 func (r *runner) getMarkdown() string {
-	size := rnd.Intn(r.MaxContentSizeKb-r.MinContentSizeKb) + r.MinContentSizeKb
+	size := rand.Intn(r.MaxContentSizeKb-r.MinContentSizeKb) + r.MinContentSizeKb
 	return strings.Repeat(markdownLorem1Kb, size)
 }
 
@@ -115,7 +112,7 @@ title: Title %d
 
 		filename := filepath.Join(dirname, "_index.md")
 		frontmatter := fmt.Sprintf(frontMatterTemplate, i)
-		must(ioutil.WriteFile(filename, []byte(frontmatter+r.getMarkdown()), 0o666))
+		must(os.WriteFile(filename, []byte(frontmatter+r.getMarkdown()), 0o666))
 	})
 
 	var pagesWorker par.Work
@@ -125,7 +122,7 @@ title: Title %d
 
 	pagesWorker.Do(numWorkers, func(x interface{}) {
 		i := x.(int)
-		sectNum := rnd.Intn(numSections)
+		sectNum := rand.Intn(numSections)
 		sectionDir := filepath.Join(contentDir, fmt.Sprintf("section%d", sectNum))
 
 		var filename string
@@ -139,7 +136,7 @@ title: Title %d
 
 		frontmatter := fmt.Sprintf(frontMatterTemplate, i)
 
-		must(ioutil.WriteFile(filename, []byte(frontmatter+r.getMarkdown()), 0o666))
+		must(os.WriteFile(filename, []byte(frontmatter+r.getMarkdown()), 0o666))
 	})
 
 	return nil
