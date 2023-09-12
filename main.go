@@ -51,7 +51,6 @@ type runner struct {
 }
 
 func main() {
-
 	r := &runner{
 		NumPages:         1000000,
 		MinContentSizeKb: 2,
@@ -76,7 +75,6 @@ func main() {
 	if err := r.Run(); err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func (r *runner) getMarkdown() string {
@@ -113,12 +111,11 @@ title: Title %d
 		i := x.(int)
 
 		dirname := filepath.Join(contentDir, fmt.Sprintf("section%d", i))
-		must(os.MkdirAll(dirname, 0777))
+		must(os.MkdirAll(dirname, 0o777))
 
 		filename := filepath.Join(dirname, "_index.md")
 		frontmatter := fmt.Sprintf(frontMatterTemplate, i)
-		must(ioutil.WriteFile(filename, []byte(frontmatter+r.getMarkdown()), 0666))
-
+		must(ioutil.WriteFile(filename, []byte(frontmatter+r.getMarkdown()), 0o666))
 	})
 
 	var pagesWorker par.Work
@@ -130,11 +127,11 @@ title: Title %d
 		i := x.(int)
 		sectNum := rnd.Intn(numSections)
 		sectionDir := filepath.Join(contentDir, fmt.Sprintf("section%d", sectNum))
-		bundleDir := filepath.Join(sectionDir, fmt.Sprintf("bundle%d", i))
-		must(os.MkdirAll(bundleDir, 0777))
 
 		var filename string
 		if r.CreateBundles {
+			bundleDir := filepath.Join(sectionDir, fmt.Sprintf("bundle%d", i))
+			must(os.MkdirAll(bundleDir, 0o777))
 			filename = filepath.Join(bundleDir, "index.md")
 		} else {
 			filename = filepath.Join(sectionDir, fmt.Sprintf("page%d.md", i))
@@ -142,11 +139,10 @@ title: Title %d
 
 		frontmatter := fmt.Sprintf(frontMatterTemplate, i)
 
-		must(ioutil.WriteFile(filename, []byte(frontmatter+r.getMarkdown()), 0666))
+		must(ioutil.WriteFile(filename, []byte(frontmatter+r.getMarkdown()), 0o666))
 	})
 
 	return nil
-
 }
 
 func must(err error) {
