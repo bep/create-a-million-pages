@@ -40,18 +40,16 @@ gaudias.
 `
 
 type runner struct {
-	NumPages         int    `help:"number of pages to create (defaults to a cool million)"`
-	CreateBundles    bool   `help:"create pages as bundles"`
-	MinContentSizeKb int    `help:"minimum content size in kB (default 2)"`
-	MaxContentSizeKb int    `help:"maximum content size in kB (default 20)"`
-	OutDir           string `help:"directory to write files to."`
+	NumPages      int    `help:"number of pages to create (defaults to a cool million)"`
+	CreateBundles bool   `help:"create pages as bundles"`
+	ContentSizeKb int    `help:"content size in kB (default 2)"`
+	OutDir        string `help:"directory to write files to."`
 }
 
 func main() {
 	r := &runner{
-		NumPages:         1000000,
-		MinContentSizeKb: 2,
-		MaxContentSizeKb: 20,
+		NumPages:      1000000,
+		ContentSizeKb: 2,
 	}
 
 	p := arg.MustParse(r)
@@ -75,8 +73,7 @@ func main() {
 }
 
 func (r *runner) getMarkdown() string {
-	size := rand.Intn(r.MaxContentSizeKb-r.MinContentSizeKb) + r.MinContentSizeKb
-	return strings.Repeat(markdownLorem1Kb, size)
+	return strings.Repeat(markdownLorem1Kb, r.ContentSizeKb)
 }
 
 func (r *runner) Run() error {
